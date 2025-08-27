@@ -1,0 +1,29 @@
+import { useState } from "react";
+
+export default function NumberGuess() {
+  const [target] = useState(() => Math.floor(Math.random() * 100) + 1);
+  const [guess, setGuess] = useState("");
+  const [message, setMessage] = useState("Guess a number 1-100");
+
+  const handleGuess = () => {
+    const g = parseInt(guess);
+    if (g === target) setMessage("🎉 Correct!");
+    else if (g < target) setMessage("⬆ Too low!");
+    else setMessage("⬇ Too high!");
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-indigo-900 text-white">
+      <h1 className="text-xl mb-2">{message}</h1>
+      <input
+        type="number"
+        value={guess}
+        onChange={(e) => setGuess(e.target.value)}
+        className="text-black p-2 rounded"
+      />
+      <button onClick={handleGuess} className="mt-2 px-4 py-2 bg-green-500 rounded">
+        Guess
+      </button>
+    </div>
+  );
+}
