@@ -1,0 +1,46 @@
+import { useState, useEffect } from "react";
+
+export default function DodgeBlocks() {
+  const [player, setPlayer] = useState(50);
+  const [blocks, setBlocks] = useState([]);
+  const [alive, setAlive] = useState(true);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!alive) return;
+      if (e.key === "ArrowLeft") setPlayer((p) => Math.max(0, p - 10));
+      if (e.key === "ArrowRight") setPlayer((p) => Math.min(90, p + 10));
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [alive]);
+
+  useEffect(() => {
+    if (!alive) return;
+    const interval = setInterval(() => {
+      setBlocks((bs) =>
+        bs
+          .map((b) => ({ ...b, y: b.y + 5 }))
+          .filter((b) => b.y < 100)
+          .concat(Math.random() < 0.2 ? [{ x: Math.random() * 90, y: 0 }] : [])
+      );
+    }, 300);
+    return () => clearInterval(interval);
+  }, [alive]);
+
+  useEffect(() => {
+    for (const b of blocks) {
+      if (Math.abs(b.x - player) < 10 && b.y > 80) setAlive(false);
+    }
+  }, [blocks, player]);
+
+  return (
+    <div className="relative w-full h-screen bg-black text-white">
+      {alive ? <h1 className="absolute top-2 left-2">Dodge!</h1> : <h1 className="absolute top-2 left-2 text-red-500">Game Over</h1>}
+      <div className="absolute bottom-0 bg-blue-500 w-10 h-10" style={{ left: `${player}%` }} />
+      {blocks.map((b, i) => (
+        <div key={i} className="absolute bg-red-500 w-10 h-10" style={{ top: `${b.y}%`, left: `${b.x}%` }} />
+      ))}
+    </div>
+  );
+}
