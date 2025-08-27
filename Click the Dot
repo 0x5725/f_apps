@@ -1,0 +1,30 @@
+import { useState, useEffect } from "react";
+
+export default function ClickTheDot() {
+  const [pos, setPos] = useState({ x: 50, y: 50 });
+  const [score, setScore] = useState(0);
+
+  const moveDot = () => {
+    setPos({ x: Math.random() * 90, y: Math.random() * 90 });
+  };
+
+  const handleClick = () => {
+    setScore(score + 1);
+    moveDot();
+  };
+
+  useEffect(() => {
+    moveDot();
+  }, []);
+
+  return (
+    <div className="relative w-full h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
+      <h1 className="text-2xl mb-4">Score: {score}</h1>
+      <div
+        onClick={handleClick}
+        className="absolute bg-pink-500 rounded-full w-10 h-10 cursor-pointer"
+        style={{ top: `${pos.y}%`, left: `${pos.x}%` }}
+      />
+    </div>
+  );
+}
